@@ -30,7 +30,7 @@ class FaceRecognition {
     }
     distance = sqrt(distance);
 
-    const threshold = 0.6; // Adjust this value based on your requirements
+    const threshold = 7; // Adjust this value based on your requirements
     return distance < threshold;
   }
 

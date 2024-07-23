@@ -19,9 +19,11 @@ class _CameraPageState extends State<CameraPage> {
   late Future<void> _initializeControllerFuture;
   late FaceRecognition _faceRecognition;
   bool _isRecognized = false;
-  String _userId= "0";
+  String? _userId;
   String _userName= "undefined";
   List<Face> _faces = [];
+
+  int increment= 0;
 
   @override
   void initState() {
@@ -42,24 +44,27 @@ class _CameraPageState extends State<CameraPage> {
     final faces = await faceDetector.processImage(inputImage);
 
     for (final face in faces) {
-      final result = await _faceRecognition.recognizeFace(face)??["0", "undefined"];
+      final result = await _faceRecognition.recognizeFace(face)??[null, "undefined"];
       setState(() {
         _isRecognized = result[0] != null;
         _userName = result[1]??"undefined";
-        _userId = result[0]??"0";
+        _userId = result[0];
         _faces = faces;
       });
 
-      if (_isRecognized) {
+      if (_isRecognized || increment>3) {
         // Redirect to another page with the recognized face ID
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => RecognizedPage(userId: _userId, userName: _userName),
+            builder: (context) => RecognizedPage(userId: _userId??"0", userName: _userName),
           ),
         );
         break;
       } else {
+        setState(() {
+          increment++;
+        });
         getFloatingSnackBar(size, 'wajah tidak dikenali', context);
       }
     }
