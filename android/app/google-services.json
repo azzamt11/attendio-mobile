@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "994776796687",
+    "project_id": "attendio-d3954",
+    "storage_bucket": "attendio-d3954.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:994776796687:android:29f20669ced88742865d7a",
+        "android_client_info": {
+          "package_name": "com.example.attendio"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOYKrmqCReEJRhmYdS5hHMbphLmHf2Sng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
