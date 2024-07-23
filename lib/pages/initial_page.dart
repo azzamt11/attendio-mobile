@@ -1,12 +1,11 @@
-import 'package:attendio_mobile/pages/camera_page.dart';
+import 'package:attendio_mobile/pages/attendance_page.dart';
 import 'package:attendio_mobile/widget/text_widget.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 
 class InitialPage extends StatefulWidget {
-  final CameraDescription camera;
-  const InitialPage({Key? key, required this.camera}) : super(key: key);
+  const InitialPage({Key? key}) : super(key: key);
 
   @override
   _InitialPageState createState() => _InitialPageState();
@@ -89,7 +88,7 @@ class _InitialPageState extends State<InitialPage> {
                 height: 50,
                 child: Column(
                   children: [
-                    TextWidget(text: "Todo Mobile", type: 1),
+                    TextWidget(text: "Attendio Mobile", type: 1),
                     TextWidget(text: "Version 1.0.0", type: 1),
                   ],
                 ),
@@ -105,10 +104,11 @@ class _InitialPageState extends State<InitialPage> {
     setState(() {
       targetOpacity= 1;
     });
-    await Future.delayed(const Duration(milliseconds: 3000));
+    await Future.delayed(const Duration(milliseconds: 5000));
     if(!context.mounted) {
       return;
     }
-    Navigator.push(context, MaterialPageRoute(builder: (context)=> CameraPage(camera: widget.camera)));
+
+    Navigator.push(context, MaterialPageRoute(builder: (context)=> AttendancePage()));
   }
 }

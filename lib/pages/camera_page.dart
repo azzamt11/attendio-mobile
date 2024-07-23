@@ -1,4 +1,5 @@
 import 'package:attendio_mobile/utils/face_recognition.dart';
+import 'package:attendio_mobile/widget/text_widget.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
@@ -52,7 +53,11 @@ class _CameraPageState extends State<CameraPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Face Recognition')),
+      appBar: AppBar(
+        centerTitle: true,
+        title: const TextWidget(text: "Scan Your Face", type: 3),
+        leading: Container(), // Completely vanishes the leading widget
+      ),
       body: FutureBuilder<void>(
         future: _initializeControllerFuture,
         builder: (context, snapshot) {

@@ -15,12 +15,12 @@ class TextStyles {
         fontSize= 14;
       }
       case 2: {
-        color= Colors.black;
+        color= Colors.white;
         fontSize= 16;
       }
       case 3: {
-        color= Colors.grey;
-        fontSize= 13;
+        color= Colors.black;
+        fontSize= 25;
       }
       case 4: {
         color= Colors.black;
@@ -36,7 +36,11 @@ class TextStyles {
         fontSize= 15;
       }
       case 7: {
-        color= Colors.grey;
+        color= Colors.white;
+        fontSize= 20;
+      }
+      case 8: {
+        color= Colors.black;
         fontSize= 20;
       }
       default: {
