@@ -1,9 +1,7 @@
-import 'package:attendio_mobile/utils/coordinate_painter.dart';
 import 'package:attendio_mobile/utils/face_recognition.dart';
 import 'package:attendio_mobile/widget/text_widget.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 
 class CameraPage extends StatefulWidget {
@@ -19,7 +17,6 @@ class _CameraPageState extends State<CameraPage> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   late FaceRecognition _faceRecognition;
-  late InputImageRotation _rotation;
   bool _isRecognized = false;
   List<Face> _faces = [];
 
@@ -28,21 +25,9 @@ class _CameraPageState extends State<CameraPage> {
     super.initState();
     _controller = CameraController(widget.camera, ResolutionPreset.high);
     _initializeControllerFuture = _controller.initialize();
-    _rotation = _getImageRotation(widget.camera.sensorOrientation);
+    _faceRecognition = FaceRecognition();
   }
 
-  InputImageRotation _getImageRotation(int rotation) {
-    switch (rotation) {
-      case 90:
-        return InputImageRotation.rotation90deg;
-      case 180:
-        return InputImageRotation.rotation180deg;
-      case 270:
-        return InputImageRotation.rotation270deg;
-      default:
-        return InputImageRotation.rotation0deg;
-    }
-  }
   @override
   void dispose() {
     _controller.dispose();
@@ -62,8 +47,17 @@ class _CameraPageState extends State<CameraPage> {
       if (isRecognized) {
         // Redirect to another page
         Navigator.push(context, MaterialPageRoute(builder: (context) => RecognizedPage()));
-        break;
+        return;
       }
+    }
+    // If no face is recognized, show the snackbar
+    if (!_isRecognized) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('wajah tidak dikenali'),
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
   }
 
@@ -79,22 +73,13 @@ class _CameraPageState extends State<CameraPage> {
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                return Stack(
-                  children: [
-                    CameraPreview(_controller),
-                    CustomPaint(
-                      painter: FacePainter(
-                        _faces,
-                        _isRecognized,
-                        _rotation,
-                        Size(constraints.maxWidth, constraints.maxHeight),
-                      ),
-                    ),
-                  ],
-                );
-              },
+            return Stack(
+              children: [
+                CameraPreview(_controller),
+                CustomPaint(
+                  painter: FacePainter(_faces, _isRecognized),
+                ),
+              ],
             );
           } else {
             return Center(child: CircularProgressIndicator());
@@ -131,10 +116,8 @@ class RecognizedPage extends StatelessWidget {
 class FacePainter extends CustomPainter {
   final List<Face> faces;
   final bool isRecognized;
-  final InputImageRotation rotation;
-  final Size absoluteImageSize;
 
-  FacePainter(this.faces, this.isRecognized, this.rotation, this.absoluteImageSize);
+  FacePainter(this.faces, this.isRecognized);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -144,16 +127,13 @@ class FacePainter extends CustomPainter {
       ..color = isRecognized ? Colors.green : Colors.red;
 
     for (final face in faces) {
-      canvas.drawRect(
-        Rect.fromLTRB(
-          translateX(face.boundingBox.left, rotation, size, absoluteImageSize),
-          translateY(face.boundingBox.top, rotation, size, absoluteImageSize),
-          translateX(face.boundingBox.right, rotation, size, absoluteImageSize),
-          translateY(
-              face.boundingBox.bottom, rotation, size, absoluteImageSize),
-        ),
-        paint,
+      Rect newBox= Rect.fromLTWH(
+        300- face.boundingBox.left*0.5-130, 
+        face.boundingBox.bottom*0.65 -350, 
+        face.boundingBox.width*0.4, 
+        face.boundingBox.height*0.6
       );
+      canvas.drawRect(newBox, paint);
     }
   }
 
