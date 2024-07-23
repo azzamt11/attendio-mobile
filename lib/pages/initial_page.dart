@@ -1,6 +1,5 @@
 import 'package:attendio_mobile/pages/attendance_page.dart';
 import 'package:attendio_mobile/widget/text_widget.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 

@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:attendio_mobile/helpers/text_styles.dart';
 import 'package:attendio_mobile/pages/camera_page.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
