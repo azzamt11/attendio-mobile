@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Feature Extraction</title>
+</head>
+<body>
+    <h1>Extract Facial Features</h1>
+    <input type="file" id="imageInput" accept="image/*">
+    <br>
+    <canvas id="canvas"></canvas>
+    <pre id="result"></pre>
+
+    <!-- Load face-api.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+    <script>
+        // Load the models
+        async function loadModels() {
+            await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+            await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
+            await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
+        }
+
+        loadModels().then(() => {
+            document.getElementById('imageInput').addEventListener('change', async (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const img = await faceapi.bufferToImage(file);
+                    const canvas = document.getElementById('canvas');
+                    const displaySize = { width: img.width, height: img.height };
+                    faceapi.matchDimensions(canvas, displaySize);
+                    const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+                    
+                    if (detections) {
+                        const resizedDetections = faceapi.resizeResults(detections, displaySize);
+                        faceapi.draw.drawDetections(canvas, resizedDetections);
+                        faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
+
+                        // Extract and display face descriptors (features)
+                        const faceDescriptor = detections.descriptor;
+                        document.getElementById('result').textContent = JSON.stringify(faceDescriptor, null, 2);
+                    } else {
+                        document.getElementById('result').textContent = 'No face detected.';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
