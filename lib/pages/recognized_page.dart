@@ -3,6 +3,7 @@ import 'package:attendio_mobile/helpers/text_styles.dart';
 import 'package:attendio_mobile/pages/success_page.dart';
 import 'package:attendio_mobile/widget/text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -19,6 +20,8 @@ class _RecognizedPageState extends State<RecognizedPage> {
   String location = "";
   late Position _currentPosition;
   late GoogleMapController mapController;
+
+  String _currentAddress= "Undefined";
 
   @override
   void initState() {
@@ -52,6 +55,8 @@ class _RecognizedPageState extends State<RecognizedPage> {
     setState(() {
       location = "(${_currentPosition.latitude}, ${_currentPosition.longitude})";
     });
+
+    getAddress();
   }
 
   @override
@@ -68,7 +73,7 @@ class _RecognizedPageState extends State<RecognizedPage> {
           children: [
             TextWidget(text: "Welcome ${widget.userName}!", type: 4),
             const TextWidget(text: "Your location is", type: 5),
-            const TextWidget(text: "Kota Jakarta Barat", type: 6),
+            TextWidget(text: location.isEmpty? "Loading..." : _currentAddress, type: 6),
             TextWidget(text: location, type: 5),
             mapWidget(size),
             const SizedBox(height: 100),
@@ -134,5 +139,20 @@ class _RecognizedPageState extends State<RecognizedPage> {
         ),
       );
     }
+  }
+
+  Future<void> getAddress() async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(52.2165157, 6.9437819);
+    await placemarkFromCoordinates(
+          _currentPosition!.latitude, _currentPosition!.longitude)
+      .then((List<Placemark> placemarks) {
+    Placemark place = placemarks[0];
+    setState(() {
+      _currentAddress =
+         '${place.street}, ${place.subLocality} \n ${place.subAdministrativeArea} \n ${place.postalCode}';
+    });
+    }).catchError((e) {
+      debugPrint(e);
+    });
   }
 }
