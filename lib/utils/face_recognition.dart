@@ -34,15 +34,15 @@ class FaceRecognition {
     return distance < threshold;
   }
 
-  Future<bool> recognizeFace(Face face) async {
+  Future<List<String?>?> recognizeFace(Face face) async {
     final faceFeatures = _extractFaceFeatures(face);
 
     for (final model in _dummyFaceData) {
       final modelFeatures = List<double>.from(model['features']);
       if (_compareFeatures(faceFeatures, modelFeatures)) {
-        return true;
+        return [model['user_id'] as String?, model['user_name'] as String?];
       }
     }
-    return false;
+    return null;
   }
 }

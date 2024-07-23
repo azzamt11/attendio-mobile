@@ -28,8 +28,8 @@ class TextStyles {
         fontWeight= FontWeight.bold;
       }
       case 5: {
-        color= Colors.blue;
-        fontSize= 15;
+        color= const Color.fromARGB(255, 24, 64, 97);
+        fontSize= 17;
       }
       case 6: {
         color= Colors.green;

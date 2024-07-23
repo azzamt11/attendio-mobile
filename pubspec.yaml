@@ -41,6 +41,8 @@ dependencies:
   image: ^4.2.0
   google_fonts: ^6.2.1
   image_picker: ^1.1.2
+  geolocator: ^12.0.0
+  webview_flutter: ^4.8.0
 
 dev_dependencies:
   flutter_test:

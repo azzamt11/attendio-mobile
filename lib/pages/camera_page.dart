@@ -1,3 +1,4 @@
+import 'package:attendio_mobile/pages/recognized_page.dart';
 import 'package:attendio_mobile/utils/face_recognition.dart';
 import 'package:attendio_mobile/widget/text_widget.dart';
 import 'package:camera/camera.dart';
@@ -18,6 +19,8 @@ class _CameraPageState extends State<CameraPage> {
   late Future<void> _initializeControllerFuture;
   late FaceRecognition _faceRecognition;
   bool _isRecognized = false;
+  String _userId= "0";
+  String _userName= "undefined";
   List<Face> _faces = [];
 
   @override
@@ -34,39 +37,41 @@ class _CameraPageState extends State<CameraPage> {
     super.dispose();
   }
 
-  void _processImage(InputImage inputImage) async {
+  void _processImage(InputImage inputImage, Size size) async {
     final faceDetector = GoogleMlKit.vision.faceDetector();
     final faces = await faceDetector.processImage(inputImage);
 
     for (final face in faces) {
-      final isRecognized = await _faceRecognition.recognizeFace(face);
+      final result = await _faceRecognition.recognizeFace(face)??["0", "undefined"];
       setState(() {
-        _isRecognized = isRecognized;
+        _isRecognized = result[0] != null;
+        _userName = result[1]??"undefined";
+        _userId = result[0]??"0";
         _faces = faces;
       });
-      if (isRecognized) {
-        // Redirect to another page
-        Navigator.push(context, MaterialPageRoute(builder: (context) => RecognizedPage()));
-        return;
+
+      if (_isRecognized || true) {
+        // Redirect to another page with the recognized face ID
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RecognizedPage(userId: _userId, userName: _userName),
+          ),
+        );
+        break;
+      } else {
+        getFloatingSnackBar(size, 'wajah tidak dikenali', context);
       }
-    }
-    // If no face is recognized, show the snackbar
-    if (!_isRecognized) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('wajah tidak dikenali'),
-          duration: Duration(seconds: 2),
-        ),
-      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    var size= MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const TextWidget(text: "Scan Your Face", type: 3),
+        title: const TextWidget(text: "Scan Wajah Anda", type: 3),
         leading: Container(), // Completely vanishes the leading widget
       ),
       body: FutureBuilder<void>(
@@ -92,7 +97,7 @@ class _CameraPageState extends State<CameraPage> {
             await _initializeControllerFuture;
             final image = await _controller.takePicture();
             final inputImage = InputImage.fromFilePath(image.path);
-            _processImage(inputImage);
+            _processImage(inputImage, size);
           } catch (e) {
             print(e);
           }
@@ -101,15 +106,23 @@ class _CameraPageState extends State<CameraPage> {
       ),
     );
   }
-}
 
-class RecognizedPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Recognized')),
-      body: const Center(child: Text('Face recognized successfully!')),
+  void getFloatingSnackBar(var size, String string, BuildContext context) {
+    SnackBar floatingSnackBar = SnackBar(
+      content: Text(
+        string,
+        textAlign: TextAlign.center,
+        style: const TextStyle(color: Colors.white),
+      ),
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.black,
+      margin:  EdgeInsets.only(
+          bottom: (size.height / 2) - 40,
+          left: size.width / 2 - 100,
+          right: size.width / 2 - 100),
+      duration: const Duration(seconds: 2),
     );
+    ScaffoldMessenger.of(context).showSnackBar(floatingSnackBar);
   }
 }
 
