@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:attendio_mobile/helpers/text_styles.dart';
+import 'package:attendio_mobile/pages/success_page.dart';
 import 'package:attendio_mobile/widget/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -69,24 +71,28 @@ class _RecognizedPageState extends State<RecognizedPage> {
             const TextWidget(text: "Kota Jakarta Barat", type: 6),
             TextWidget(text: location, type: 5),
             mapWidget(size),
-            SizedBox(height: 100),
-            button()
+            const SizedBox(height: 100),
+            !location.isEmpty? button(true) : button(false)
           ],
         ),
       ),
     );
   }
 
-  Widget button(String text, int index, int type) {
+  Widget button(bool enabled) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> SuccessPage()));
+        if(enabled) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context)=> const SuccessPage())
+          );
+        }
       },
       child: Container(
         height: 40,
         width: 200,
         decoration: BoxDecoration(
-          color: type== 7? Colors.black : Colors.white,
+          color: enabled? Colors.black : Colors.black12,
           boxShadow: const [
             BoxShadow(
               offset: Offset(2, 3),
@@ -98,7 +104,7 @@ class _RecognizedPageState extends State<RecognizedPage> {
           borderRadius: BorderRadius.circular(15)
         ),
         child: Center(
-          child: Text(text, style: TextStyles().getStyle(type))
+          child: Text(enabled? "Submit" : "Loading...", style: TextStyles().getStyle(7))
         )
       )
     );
