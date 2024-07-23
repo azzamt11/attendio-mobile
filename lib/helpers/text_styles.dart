@@ -32,8 +32,9 @@ class TextStyles {
         fontSize= 17;
       }
       case 6: {
-        color= Colors.green;
-        fontSize= 15;
+        color= const Color.fromARGB(255, 13, 44, 14);
+        fontSize= 19;
+        fontWeight= FontWeight.bold;
       }
       case 7: {
         color= Colors.white;
