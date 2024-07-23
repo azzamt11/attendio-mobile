@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Face Feature Extraction</title>
+    <style>
+        #canvas {
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>Extract Facial Features</h1>
@@ -13,13 +19,18 @@
     <pre id="result"></pre>
 
     <!-- Load face-api.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@1.2.4/dist/face-api.min.js"></script>
     <script>
+        // Ensure faceapi object is loaded
+        console.log('faceapi', faceapi);
+
         // Load the models
         async function loadModels() {
+            console.log('Loading models...');
             await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
             await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
             await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
+            console.log('Models loaded.');
         }
 
         loadModels().then(() => {
@@ -45,7 +56,7 @@
                     }
                 }
             });
-        });
+        }).catch(err => console.error('Error loading models:', err));
     </script>
 </body>
 </html>

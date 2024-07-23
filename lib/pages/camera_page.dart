@@ -50,7 +50,7 @@ class _CameraPageState extends State<CameraPage> {
         _faces = faces;
       });
 
-      if (_isRecognized || true) {
+      if (_isRecognized) {
         // Redirect to another page with the recognized face ID
         Navigator.push(
           context,
