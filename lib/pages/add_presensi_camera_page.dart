@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 
-class CameraPage extends StatefulWidget {
-  const CameraPage({super.key});
+class AddPresensiCameraPage extends StatefulWidget {
+  const AddPresensiCameraPage({super.key});
 
   @override
-  State<CameraPage> createState() => _CameraPageState();
+  State<AddPresensiCameraPage> createState() => _AddPresensiCameraPageState();
 }
 
-class _CameraPageState extends State<CameraPage> {
+class _AddPresensiCameraPageState extends State<AddPresensiCameraPage> {
   final FaceDetector _faceDetector = FaceDetector(
     options: FaceDetectorOptions(
       enableContours: true,

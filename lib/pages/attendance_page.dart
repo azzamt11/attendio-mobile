@@ -1,6 +1,7 @@
+import 'dart:io';
+
 import 'package:attendio_mobile/helpers/text_styles.dart';
 import 'package:attendio_mobile/pages/camera_page.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -12,6 +13,7 @@ class AttendancePage extends StatefulWidget {
 }
 
 class _AttendancePageState extends State<AttendancePage> {
+  File? file;
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +26,19 @@ class _AttendancePageState extends State<AttendancePage> {
       },
       child: Scaffold(
         body: Container(
+          color: Colors.white,
           height: size.height,
           width: size.width,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              if(file != null)
+              Image.file(
+                file!,
+                height: 100,
+                width: 100
+              ),
               button("Scan Wajah", 0, 8),
               const SizedBox(height: 30),
               button("Register", 1, 7),
@@ -71,12 +80,12 @@ class _AttendancePageState extends State<AttendancePage> {
 
     if (index==0) {
       if(!context.mounted) {
-      return;
+        return;
       }
 
-      final cameras = await availableCameras();
-      final firstCamera = cameras.length> 1? cameras[1] : cameras.first;
-      Navigator.push(context, MaterialPageRoute(builder: (context)=> CameraPage(camera: firstCamera)));
+      file = await Navigator.push(
+        context, MaterialPageRoute(builder: (context)=> const CameraPage())
+      );
 
     } else {
       if (!context.mounted) {

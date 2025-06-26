@@ -142,9 +142,8 @@ class _RecognizedPageState extends State<RecognizedPage> {
   }
 
   Future<void> getAddress() async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(52.2165157, 6.9437819);
     await placemarkFromCoordinates(
-          _currentPosition!.latitude, _currentPosition!.longitude)
+          _currentPosition.latitude, _currentPosition.longitude)
       .then((List<Placemark> placemarks) {
     Placemark place = placemarks[0];
     setState(() {
